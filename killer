@@ -1,0 +1,32 @@
+#!/bin/bash
+
+##
+# port-release
+#
+# Description: Releases a TCP/UDP port that was being used by some process that you might know by killing that process
+# Author:      Matheus Calegaro <hello@matheus.me>
+# Date:        2019-01-25
+##
+
+if [ "$(whoami)" != "root" ]; then
+	echo "You need root privileges to run this command effectively."
+	exit 1
+fi
+
+if [ -z $1 ]; then
+  echo "No port informed! Exiting..."
+  exit 1
+fi
+
+echo "Searching for process using port $1..."
+
+PROC=$(sudo netstat -putana | grep $1 | awk '{ print $7 }')
+
+if [ PROC == "" ]; then
+  echo "I couldn't find any running process using port $1!"
+  exit 0
+else
+  echo "Found process '$PROC' using port $1! Killing it..."
+  sudo kill -9 $(echo $PROC | tr -dc '0-9')
+fi
+
