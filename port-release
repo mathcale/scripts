@@ -13,20 +13,26 @@ if [ "$(whoami)" != "root" ]; then
 	exit 1
 fi
 
-if [ -z $1 ]; then
+PORT="$1"
+
+if [ -z $PORT ]; then
   echo "No port informed! Exiting..."
   exit 1
 fi
 
-echo "Searching for process using port $1..."
+echo "Searching for process using port $PORT..."
 
-PROC=$(sudo netstat -putana | grep $1 | awk '{ print $7 }')
+PROC=$(netstat -putana | grep $PORT | awk '{ printf ("%s ", $7) }' | xargs)
 
-if [ PROC == "" ]; then
-  echo "I couldn't find any running process using port $1!"
+if [ -z "$PROC" ]; then
+  echo "No process using port $PORT, great!"
   exit 0
-else
-  echo "Found process '$PROC' using port $1! Killing it..."
-  sudo kill -9 $(echo $PROC | tr -dc '0-9')
 fi
+
+for SINGLE_PROC in $PROC; do
+  P=$(echo $SINGLE_PROC | cut -d '/' -f 1)
+
+  echo "Found process '$P' using port $PORT! Killing it..."
+  kill -0 $P && kill -9 $P
+done
 
