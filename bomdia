@@ -1,0 +1,25 @@
+#!/bin/bash
+
+echo "### Good Morning ###"
+echo ""
+
+echo "## Update ##"
+sudo apt update
+
+echo ""
+echo "## Upgrade ##"
+sudo apt upgrade -y
+
+echo ""
+echo "## Dist-Upgrade ##"
+sudo apt dist-upgrade -y
+
+echo ""
+echo "## Auto-Remove ##"
+sudo apt autoremove -y
+
+echo ""
+echo "## Auto-Clean ##"
+sudo apt autoclean -y
+
+echo "Done!"
